@@ -1,7 +1,5 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print, duplicate_ignore
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:miamiga_app/components/important_button.dart';
 import 'package:miamiga_app/components/my_important_btn.dart';
@@ -41,7 +39,6 @@ class _InicioScreenState extends State<InicioScreen> {
           return 'Usuario desconocido';
         }
       } catch (e) {
-        // ignore: avoid_print
         print('Error getting user name: $e');
         return 'Usuario desconocido';
       }
@@ -51,7 +48,6 @@ class _InicioScreenState extends State<InicioScreen> {
   }
 
   void denunciarScreen() async {
-    //i want a navigator to go to the edit perfil page
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => DenunciaIncidente(
@@ -86,7 +82,6 @@ class _InicioScreenState extends State<InicioScreen> {
 
   Future<void> createAlert(User? user) async {
     try {
-      // Extract UID from user
       String? userId = user?.uid;
 
       if (userId == null) {
@@ -94,11 +89,8 @@ class _InicioScreenState extends State<InicioScreen> {
         return;
       }
 
-      // String caseId = await fetchCaseData(userId);
-
       UserRegister userRegister = await fetchDenuncianteData(userId);
 
-      // The rest of your code remains unchanged
       final CollectionReference _alert =
           FirebaseFirestore.instance.collection('alert');
 
@@ -109,17 +101,16 @@ class _InicioScreenState extends State<InicioScreen> {
           ? userAlerts.docs.first.get('alert') + 1
           : 1;
 
-      // Show a confirmation dialog
       bool confirmAlert = await showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Confirmar Alerta'),
-            content: const Text('Deseas crear un alert?'),
+            content: const Text('Deseas crear un alerta?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(false); // User pressed cancel
+                  Navigator.of(context).pop(false);
                 },
                 child: const Text(
                   'Cancelar',
@@ -130,7 +121,7 @@ class _InicioScreenState extends State<InicioScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(true); // User confirmed alert
+                  Navigator.of(context).pop(true);
                 },
                 child: const Text(
                   'Confirmar',
@@ -164,9 +155,6 @@ class _InicioScreenState extends State<InicioScreen> {
             'fecha': DateTime.now(),
           });
 
-          // await FirebaseFirestore.instance.collection('cases').doc(caseId).update({
-          //   'alertCount': newAlert,
-          // });
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -186,7 +174,6 @@ class _InicioScreenState extends State<InicioScreen> {
             'lat': userRegister.lat,
             'long': userRegister.long,
             'fecha': DateTime.now(),
-            // 'case': caseId,
           });
 
           Navigator.of(context).pop();
@@ -217,104 +204,69 @@ class _InicioScreenState extends State<InicioScreen> {
     super.dispose();
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   checkUserProfile();
-  // }
-
-  // Future<void> checkUserProfile() async {
-  //   final user = FirebaseAuth.instance.currentUser;
-
-  //   if(user != null) {
-  //     final DocumentSnapshot userDoc =
-  //       await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-
-  //       if (userDoc.exists) {
-  //         final Map<String, dynamic> userData =
-  //           userDoc.data() as Map<String, dynamic>;
-  //         if (userData['fullname'] == null
-  //             || userData['ci'] == null
-  //             || userData['phone'] == null
-  //             || userData['lat'] == null
-  //             || userData['long'] == null) {
-
-  //         }
-  //       }
-  //   }
-  // }
-
-  // void showProfileCompletionSnackBar() {
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(
-  //       content: const Text('Completa tu perfil para poder denunciar'),
-  //       duration: const Duration(seconds: 3),
-  //       action: SnackBarAction(
-  //         label: 'Completar Perfil',
-  //         onPressed: () {
-  //           Navigator.of(context).pushNamed('/completar_perfil');
-  //         },
-  //       ),
-  //     ),
-  //   );
-  // }
-
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 15),
-              FutureBuilder<String>(
-                future: getUserName(widget.user),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                        child: CircularProgressIndicator(
-                      color: Color.fromRGBO(255, 87, 110, 1),
-                    ));
-                  } else {
-                    final userName = snapshot.data ?? 'Usuario desconocido';
-                    return Center(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 30.0),
-                            child: Text(
-                              'Bienvenido, $userName',
-                              style: const TextStyle(fontSize: 40),
-                              textAlign: TextAlign.start,
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 15),
+            FutureBuilder<String>(
+              future: getUserName(widget.user),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    color: Color.fromRGBO(255, 87, 110, 1),
+                  ));
+                } else {
+                  final userName = snapshot.data ?? 'Usuario desconocido';
+                  return Column(
+                    children: [
+                      Text.rich(
+                        TextSpan(
+                          text: 'Bienvenid@ \n', // Primer línea: Bienvenido seguido de un salto de línea
+                          style: TextStyle(fontSize: 40), // Tamaño de letra para 'Bienvenido'
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: '$userName', // Segunda línea: Nombre de usuario
+                              style: TextStyle(fontSize: 30), // Tamaño de letra para el nombre de usuario
                             ),
-                          ),
-                          const SizedBox(height: 100),
-                          MyImportantBtn(
-                            text: 'DENUNCIAR',
-                            onTap: denunciarScreen,
-                          ),
-                          const SizedBox(height: 100),
-                          ImportantButton(
-                            text: 'ALERTA',
-                            onTap: () async {
-                              User? user = widget.user;
-                              // DenuncianteData denuncianteData = widget.denunciaData;
-                              await createAlert(user);
-                            },
-                            icon: Icons.warning_rounded,
-                          ),
-                        ],
+                          ],
+                        ),
+                        textAlign: TextAlign.center, // Centra el texto
                       ),
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
+                      SizedBox(height: 20), // Espacio entre el texto y el primer botón
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: MyImportantBtn(
+                          text: 'DENUNCIAR',
+                          onTap: denunciarScreen,
+                        ),
+                      ),
+                      SizedBox(height: 10), // Espacio entre los botones
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: ImportantButton(
+                          text: 'ALERTA',
+                          onTap: () async {
+                            User? user = widget.user;
+                            await createAlert(user);
+                          },
+                          icon: Icons.warning_rounded,
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              },
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

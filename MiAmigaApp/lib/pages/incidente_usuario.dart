@@ -166,11 +166,6 @@ class _DenunciaIncidenteState extends State<DenunciaIncidente> {
     }
   }
 
-  // void updateImages(List<XFile> newImages) {
-  //   setState(() {
-  //     pickedImages.addAll(newImages);
-  //   });
-  // }
 
   void cargarImagen() async {
   showDialog(
@@ -415,116 +410,71 @@ Future<void> cargarAudio() async {
                   //campo de fecha del incidente
 
                   const SizedBox(height: 15),
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Seleccionar Fecha del Incidente',
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          '${date.year}/${date.month}/${date.day}',
-                          style: const TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color.fromRGBO(248, 181, 149, 1)),
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Seleccionar Fecha del Incidente',
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
                           ),
-                          child: const Text('Seleccionar Fecha'),
-                          onPressed: () async {
-                            DateTime? selectedDate = await showDatePicker(
-                              context: context,
-                              initialDate: date,
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime(2100),
-                              builder: (BuildContext context, Widget? child) {
-                                return Theme(
-                                  data: ThemeData.dark().copyWith(
-                                    colorScheme: const ColorScheme.dark(
-                                      primary: Color.fromRGBO(248, 181, 149, 1),
-                                      onPrimary: Colors.black,
-                                      surface: Color.fromRGBO(248, 181, 149, 1),
-                                      onSurface: Colors.white,
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color.fromRGBO(248, 181, 149, 1)),
+                            ),
+                            child: const Text('Seleccionar Fecha'),
+                            onPressed: () async {
+                              DateTime? selectedDate = await showDatePicker(
+                                context: context,
+                                initialDate: date,
+                                firstDate: DateTime(1900),
+                                lastDate: DateTime(2100),
+                                builder: (BuildContext context, Widget? child) {
+                                  return Theme(
+                                    data: ThemeData.dark().copyWith(
+                                      colorScheme: const ColorScheme.dark(
+                                        primary: Color.fromRGBO(248, 181, 149, 1),
+                                        onPrimary: Colors.black,
+                                        surface: Color.fromRGBO(248, 181, 149, 1),
+                                        onSurface: Colors.white,
+                                      ),
+                                      dialogBackgroundColor: Colors.black,
                                     ),
-                                    dialogBackgroundColor: Colors.black,
-                                  ),
-                                  child: child!,
-                                );
-                              },
-                            );
-                            if (selectedDate == null) return;
+                                    child: child!,
+                                  );
+                                },
+                              );
+                              if (selectedDate == null) return;
 
-                            // Create a new DateTime object with the selected date and the fixed time
-                            DateTime selectedDateTime = DateTime(
-                              selectedDate.year,
-                              selectedDate.month,
-                              selectedDate.day,
-                              timeOfDay.hour,
-                              timeOfDay.minute,
-                            );
+                              // Create a new DateTime object with the selected date and the fixed time
+                              DateTime selectedDateTime = DateTime(
+                                selectedDate.year,
+                                selectedDate.month,
+                                selectedDate.day,
+                                timeOfDay.hour,
+                                timeOfDay.minute,
+                              );
 
-                            setState(() {
-                              date = selectedDateTime;
-                            });
-                          },
-                        ),
-                      ],
+                              setState(() {
+                                date = selectedDateTime;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            '${date.year}/${date.month}/${date.day}',
+                            style: const TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+
 
                   //campo de lugar de incidente
-
-                  const SizedBox(height: 15),
-
-                  FutureBuilder<Map<String, String>>(
-                      future: getUserModifiedLocation(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          final locationData = snapshot.data!;
-                          final calle = locationData['street'];
-                          final localidad = locationData['locality'];
-                          final pais = locationData['country'];
-                          return Column(
-                            children: [
-                              /*hidden lat and long*/
-                              const SizedBox(height: 10),
-                              MyTextField(
-                                controller: latController,
-                                text: 'Latitud',
-                                hintText: 'Latitud',
-                                obscureText: false,
-                                isEnabled: false,
-                                isVisible: false,
-                              ),
-                              const SizedBox(height: 10),
-                              MyTextField(
-                                controller: longController,
-                                text: 'Longitud',
-                                hintText: 'Longitud',
-                                obscureText: false,
-                                isEnabled: false,
-                                isVisible: false,
-                              ),
-                              /*hidden lat and long*/
-                              const SizedBox(height: 10),
-                              Text('Calle: $calle'),
-                              Text('Localidad: $localidad'),
-                              Text('Pais: $pais'),
-                            ],
-                          );
-                        }
-                      }),
 
                   const SizedBox(height: 10),
 
@@ -569,6 +519,52 @@ Future<void> cargarAudio() async {
                     },
                     child: const Text('Seleccionar Ubicacion'),
                   ),
+
+                  const SizedBox(height: 10),
+
+                  FutureBuilder<Map<String, String>>(
+                      future: getUserModifiedLocation(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          final locationData = snapshot.data!;
+                          final calle = locationData['street'];
+                          final localidad = locationData['locality'];
+                          final pais = locationData['country'];
+                          return Column(
+                            children: [
+                              /*hidden lat and long*/
+                              const SizedBox(height: 10),
+                              MyTextField(
+                                controller: latController,
+                                text: 'Latitud',
+                                hintText: 'Latitud',
+                                obscureText: false,
+                                isEnabled: false,
+                                isVisible: false,
+                              ),
+                              const SizedBox(height: 10),
+                              MyTextField(
+                                controller: longController,
+                                text: 'Longitud',
+                                hintText: 'Longitud',
+                                obscureText: false,
+                                isEnabled: false,
+                                isVisible: false,
+                              ),
+                              /*hidden lat and long*/
+                              const SizedBox(height: 10),
+                              Text('Calle: $calle'),
+                              Text('Localidad: $localidad'),
+                              Text('Pais: $pais'),
+                            ],
+                          );
+                        }
+                      }),
 
                   //boton de siguiente
 

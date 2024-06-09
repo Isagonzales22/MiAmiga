@@ -573,61 +573,113 @@ List<DenuncianteData> _mapSnapshotToUserCase(QuerySnapshot snapshot) {
                           TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
-                    Text(
-                      '${date.year}/${date.month}/${date.day}',
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 16),
                     ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            const Color.fromRGBO(248, 181, 149, 1)),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                          const Color.fromRGBO(248, 181, 149, 1)),
+                    ),
+                    child: const Text(
+                      'Seleccionar Fecha',
+                      style: TextStyle(
+                        color: Colors.white,
                       ),
-                      child: const Text(
-                        'Seleccionar Fecha',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      onPressed: () async {
-                        DateTime? selectedDate = await showDatePicker(
-                          context: context,
-                          initialDate: date,
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime(2100),
-                          builder: (BuildContext context, Widget? child) {
-                            return Theme(
-                              data: ThemeData.dark().copyWith(
-                                colorScheme: const ColorScheme.dark(
-                                  primary: Color.fromRGBO(248, 181, 149, 1),
-                                  onPrimary: Colors.black,
-                                  surface: Color.fromRGBO(248, 181, 149, 1),
-                                  onSurface: Colors.white,
-                                ),
-                                dialogBackgroundColor: Colors.black,
+                    ),
+                    onPressed: () async {
+                      DateTime? selectedDate = await showDatePicker(
+                        context: context,
+                        initialDate: date,
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime(2100),
+                        builder: (BuildContext context, Widget? child) {
+                          return Theme(
+                            data: ThemeData.dark().copyWith(
+                              colorScheme: const ColorScheme.dark(
+                                primary: Color.fromRGBO(248, 181, 149, 1),
+                                onPrimary: Colors.black,
+                                surface: Color.fromRGBO(248, 181, 149, 1),
+                                onSurface: Colors.white,
                               ),
-                              child: child!,
-                            );
-                          },
-                        );
-                        if (selectedDate == null) return;
+                              dialogBackgroundColor: Colors.black,
+                            ),
+                            child: child!,
+                          );
+                        },
+                      );
+                      if (selectedDate == null) return;
 
-                        // Create a new DateTime object with the selected date and the fixed time
-                        DateTime selectedDateTime = DateTime(
-                          selectedDate.year,
-                          selectedDate.month,
-                          selectedDate.day,
-                          timeOfDay.hour,
-                          timeOfDay.minute,
-                        );
+                      // Create a new DateTime object with the selected date and the fixed time
+                      DateTime selectedDateTime = DateTime(
+                        selectedDate.year,
+                        selectedDate.month,
+                        selectedDate.day,
+                        timeOfDay.hour,
+                        timeOfDay.minute,
+                      );
 
-                        setState(() {
-                          date = selectedDateTime;
-                        });
-                      },
+                      setState(() {
+                        date = selectedDateTime;
+                        dateController.text = '${date.year}/${date.month}/${date.day}';
+                      });
+                    },
+                  ),
+
+                    const SizedBox(height: 16),
+                    Text(
+                      dateController.text.isNotEmpty
+                          ? dateController.text
+                          : '${date.year}/${date.month}/${date.day}',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
+                ),
+              ),
+              const SizedBox(height: 15),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                      const Color.fromRGBO(248, 181, 149, 1)),
+                ),
+                onPressed: () async {
+                  final selectedLocation = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const CurrentLocationScreen();
+                      },
+                    ),
+                  );
+                  if (selectedLocation != null &&
+                      selectedLocation is Map<String, double>) {
+                    setState(() {
+                      lat = selectedLocation['latitude']!;
+                      long = selectedLocation['longitude']!;
+                    });
+                    final locationData = await getUserModifiedLocation();
+                    final calle = locationData['street'];
+                    final localidad = locationData['locality'];
+                    final pais = locationData['country'];
+                    latController.text = lat.toString();
+                    longController.text = long.toString();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Column(children: [
+                          Text('Calle: $calle'),
+                          Text('Localidad: $localidad'),
+                          Text('Pais: $pais'),
+                        ]),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    changesMade = true;
+                  }
+                },
+                child: const Text(
+                  'Seleccionar Ubicacion',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
               FutureBuilder<Map<String, String>>(
@@ -677,52 +729,6 @@ List<DenuncianteData> _mapSnapshotToUserCase(QuerySnapshot snapshot) {
                     }
                   }
                 ),
-              const SizedBox(height: 15),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(
-                      const Color.fromRGBO(248, 181, 149, 1)),
-                ),
-                onPressed: () async {
-                  final selectedLocation = await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const CurrentLocationScreen();
-                      },
-                    ),
-                  );
-                  if (selectedLocation != null &&
-                      selectedLocation is Map<String, double>) {
-                    setState(() {
-                      lat = selectedLocation['latitude']!;
-                      long = selectedLocation['longitude']!;
-                    });
-                    final locationData = await getUserModifiedLocation();
-                    final calle = locationData['street'];
-                    final localidad = locationData['locality'];
-                    final pais = locationData['country'];
-                    latController.text = lat.toString();
-                    longController.text = long.toString();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Column(children: [
-                          Text('Calle: $calle'),
-                          Text('Localidad: $localidad'),
-                          Text('Pais: $pais'),
-                        ]),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                    changesMade = true;
-                  }
-                },
-                child: const Text(
-                  'Seleccionar Ubicacion',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
               const SizedBox(height: 15),
               LimitCharacterTwo(
                 controller: conclusionController,

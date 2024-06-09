@@ -27,7 +27,7 @@ class SobreScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 18),
             child: Text(
-              'Miamiga es la aplicacion que brinda ayuda a las mujeres que sufren con violencia de todo tipo, ya sea fisica, psicologica, sexual, entre otras. Su objetivo es proporcionar un medio seguro para que las mujeres puedan denunciar a sus agresores, brindando asi la ayuda necesaria para salir de estas situaciones dificiles.',
+              'Slim es tu compañera confiable en la lucha contra la violencia de género! Con nuestra aplicación móvil, puedes crear un perfil personal desde el cual puedes reportar de manera segura y rápida agresiones hacia la mujer. Ya sea que tengas evidencia en forma de videos, audio, fotos o texto, Slim te brinda la plataforma para compartir tu experiencia y buscar apoyo.',
               style: TextStyle(
                 fontSize: 20,  
               ),

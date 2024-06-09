@@ -232,174 +232,161 @@ class _PerfilScreenState extends State<PerfilScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Stack(
-            // Wrap the content with a Stack
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 15),
-                  Row(
-                    children: [
-                      const Header(
-                        header: 'Mi Perfil',
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.logout),
-                        onPressed: () {
-                          _showSignOutConfirmationDialog(context);
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 25),
-                  Stack(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        if (_image != null) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                insetPadding: const EdgeInsets.symmetric(horizontal: 80, vertical: 300),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.6), // make it circular
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 15),
+            Row(
+              children: [
+                const Header(header: 'Mi Perfil'),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.logout),
+                  onPressed: () {
+                    _showSignOutConfirmationDialog(context);
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 25),
+            Stack(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    if (_image != null) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Dialog(
+                            insetPadding: const EdgeInsets.symmetric(horizontal: 80, vertical: 300),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.6),
+                            ),
+                            child: Center(
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                height: MediaQuery.of(context).size.width * 0.8,
+                                child: ClipOval(
+                                  child: Image.memory(_image!, fit: BoxFit.cover),
                                 ),
-                                child: Center(
-                                  child: SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.8, // adjust this value as needed
-                                    height: MediaQuery.of(context).size.width * 0.8, // adjust this value as needed
-                                    child: ClipOval(
-                                      child: Image.memory(_image!, fit: BoxFit.cover),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        }
-                      },
-                      child: CircleAvatar(
-                        radius: 40,
-                        backgroundColor: Colors.white,
-                        child: _image != null
-                            ? ClipOval(
-                                child: Image.memory(
-                                  _image!,
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            : const Icon(
-                                Icons.person,
-                                color: Colors.black,
                               ),
-                      ),
-                    ),
-                    Positioned(
-                      child: IconButton(
-                        onPressed: () {
-                          selectedImageProfile();
+                            ),
+                          );
                         },
-                        icon: const Icon(
-                          Icons.add_a_photo,
-                          color: Colors.black,
+                      );
+                    }
+                  },
+                  child: CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Colors.white,
+                    child: _image != null
+                        ? ClipOval(
+                            child: Image.memory(
+                              _image!,
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : const Icon(
+                            Icons.person,
+                            color: Colors.black,
+                          ),
+                  ),
+                ),
+                Positioned(
+                  child: IconButton(
+                    onPressed: () {
+                      selectedImageProfile();
+                    },
+                    icon: const Icon(
+                      Icons.add_a_photo,
+                      color: Colors.black,
+                    ),
+                  ),
+                  bottom: -10,
+                  left: 45,
+                ),
+              ],
+            ),
+            FutureBuilder(
+              future: _fetchData(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return Column(
+                    children: [
+                      const SizedBox(height: 25),
+                      MyTextField(
+                        controller: ciController,
+                        text: 'Carnet de Identidad',
+                        hintText: 'Carnet de Identidad',
+                        obscureText: false,
+                        isEnabled: false,
+                        isVisible: true,
+                      ),
+                      const SizedBox(height: 15),
+                      MyTextField(
+                        controller: emailController,
+                        text: 'Correo Electrónico',
+                        hintText: 'Correo Electrónico',
+                        obscureText: false,
+                        isEnabled: false,
+                        isVisible: true,
+                      ),
+                      const SizedBox(height: 15),
+                      MyTextField(
+                        controller: fullnameController,
+                        text: 'Nombre Completo',
+                        hintText: 'Nombre Completo',
+                        obscureText: false,
+                        isEnabled: false,
+                        isVisible: true,
+                      ),
+                      const SizedBox(height: 15),
+                      MyTextField(
+                        controller: locationController,
+                        text: 'Ubicación',
+                        hintText: 'Ubicación',
+                        obscureText: false,
+                        isEnabled: false,
+                        isVisible: true,
+                      ),
+                      const SizedBox(height: 15),
+                      MyTextField(
+                        controller: phoneController,
+                        text: 'Telefono',
+                        hintText: 'Telefono',
+                        obscureText: false,
+                        isEnabled: false,
+                        isVisible: true,
+                      ),
+                      const SizedBox(height: 25),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 30.0), // Add padding here
+                        child: MyImportantBtn(
+                          onTap: editPersonalData,
+                          text: 'Editar Perfil',
                         ),
                       ),
-                      bottom: -10,
-                      left: 45,
-                    ),
-                  ],
-                ),
-                  FutureBuilder(
-                      future: null,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          return Column(
-                            children: [
-                              const SizedBox(height: 25),
-                              // Text(
-                              //   'Carnet de Identidad: ${ci ?? 'No disponible'}',
-                              //   style: const TextStyle(
-                              //     fontSize: 16,
-                              //     fontWeight: FontWeight.bold,
-                              //   ),
-                              // ),
-                              MyTextField(
-                                controller: ciController,
-                                text: 'Carnet de Identidad',
-                                hintText: 'Carnet de Identidad',
-                                obscureText: false,
-                                isEnabled: false,
-                                isVisible: true,
-                              ),
-                              const SizedBox(height: 15),
-                              MyTextField(
-                                controller: emailController,
-                                text: 'Correo Electrónico',
-                                hintText: 'Correo Electrónico',
-                                obscureText: false,
-                                isEnabled: false,
-                                isVisible: true,
-                              ),
-                              const SizedBox(height: 15),
-                              MyTextField(
-                                controller: fullnameController,
-                                text: 'Nombre Completo',
-                                hintText: 'Nombre Completo',
-                                obscureText: false,
-                                isEnabled: false,
-                                isVisible: true,
-                              ),
-                              const SizedBox(height: 15),
-                              MyTextField(
-                                controller: locationController,
-                                text: 'Ubicación',
-                                hintText: 'Ubicación',
-                                obscureText: false,
-                                isEnabled: false,
-                                isVisible: true,
-                              ),
-                              const SizedBox(height: 15),
-                              MyTextField(
-                                controller: phoneController,
-                                text: 'Telefono',
-                                hintText: 'Telefono',
-                                obscureText: false,
-                                isEnabled: false,
-                                isVisible: true,
-                              ),
-                              const SizedBox(height: 25),
-                              MyImportantBtn(
-                                  onTap: editPersonalData,
-                                  text: 'Editar Perfil'),
-                            ],
-                          );
-                        }
-                      }
-                    ),
-                ],
-              ),
-            ],
-          ),
+                    ],
+                  );
+                }
+              },
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   // Function to show the sign-out confirmation dialog
   void _showSignOutConfirmationDialog(BuildContext context) {
